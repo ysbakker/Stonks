@@ -3,6 +3,13 @@ version: '3.4'
 services:
   stonks.api:
     image: ${DOCKER_REGISTRY-}stonks
+    depends_on:
+      - "stonks.db"
     build:
       context: .
       dockerfile: Stonks.API/Dockerfile
+  stonks.db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432"

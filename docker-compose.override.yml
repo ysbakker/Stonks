@@ -11,3 +11,8 @@ services:
     volumes:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+  stonks.db:
+    ports:
+      - "4002:5432" 
+    env_file:
+      - ".env"

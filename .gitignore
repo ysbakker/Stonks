@@ -141,3 +141,6 @@ _NCrunch*
 # Design
 *.afphoto
 *.afdesign
+
+# Env
+.env
