@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  stonks.api:
+    image: ${DOCKER_REGISTRY-}stonks
+    build:
+      context: .
+      dockerfile: Stonks.API/Dockerfile
