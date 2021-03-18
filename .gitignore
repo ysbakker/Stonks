@@ -135,6 +135,9 @@ _NCrunch*
 # Rider
 .idea/
 
+# Visual studio
+.vs/
+
 # Design
 *.afphoto
 *.afdesign
