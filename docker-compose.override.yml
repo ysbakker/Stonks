@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  stonks.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "4000:80"
+    volumes:
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+  stonks.db:
+    ports:
+      - "4002:5432" 
+    env_file:
+      - ".env"
