@@ -20,16 +20,24 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="1"
+                        <Label Grid.Column="0"
                                Text="{Binding Symbol}"
                                FontAttributes="Bold" />
+                        <Label Grid.Column="1"
+                               HorizontalOptions="End"
+                               Text="{Binding Value}"
+                               FontAttributes="Bold" />
                         <Label Grid.Row="1"
-                               Grid.Column="1"
+                               Grid.Column="0"
                                Text="{Binding Name}"
                                FontAttributes="Italic" />
+                        <Label Grid.Row="1"
+                               Grid.Column="1"
+                               HorizontalOptions="End"
+                               Text="{Binding Change}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
