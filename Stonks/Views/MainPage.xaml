@@ -9,7 +9,8 @@
     </ContentPage.BindingContext>
     
     <StackLayout Padding="10, 0">
-        <SearchBar />
+        <SearchBar Text="{Binding SearchText}"
+                   SearchCommand="{Binding SearchCommand}" />
     
         <CollectionView ItemsSource="{Binding Stocks}">
             <CollectionView.ItemTemplate>
