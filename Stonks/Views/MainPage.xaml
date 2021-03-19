@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Stonks"
+             xmlns:viewModels="clr-namespace:Stonks.ViewModels;assembly=Stonks"
              x:Class="Stonks.MainPage"
              Title="Stonks">
     <ContentPage.BindingContext>
-        <local:MarketViewModel />
+        <viewModels:MarketViewModel />
     </ContentPage.BindingContext>
     
     <StackLayout Padding="10, 0">
