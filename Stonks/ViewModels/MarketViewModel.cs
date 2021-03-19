@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Stonks.Views;
 using Xamarin.Forms;
 
 namespace Stonks
@@ -13,6 +15,7 @@ namespace Stonks
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
         private Command _searchCommand;
+        public INavigation Navigation { get; set;}
 
         public ObservableCollection<StockModel> Stocks
         {
@@ -34,6 +37,8 @@ namespace Stonks
             }
         }
 
+        public StockModel SelectedItem { get; set; }
+
         public string SearchText
         {
             get => _searchText;
@@ -49,7 +54,12 @@ namespace Stonks
                 }
             }
         }
-        
+
+        public Command StockSelectionChangedCommand => new Command(async () =>
+        {
+            await Application.Current.MainPage.Navigation.PushAsync(new StockDetails(SelectedItem));
+        });
+
         public ICommand SearchCommand => _searchCommand ?? new Command(() => OnPropertyChanged(nameof(Stocks)));
 
         public event PropertyChangedEventHandler PropertyChanged;

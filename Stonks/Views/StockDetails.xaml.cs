@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace Stonks.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Details : ContentPage
+    public partial class StockDetails : ContentPage
     {
-        public Details()
+        public StockDetails(StockModel stock)
         {
             InitializeComponent();
         }
