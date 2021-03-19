@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Stonks.API.Models;
 
 namespace Stonks.API.Controllers
 {
@@ -11,7 +12,11 @@ namespace Stonks.API.Controllers
     [Route("[controller]")]
     public class StockController : ControllerBase
     {
-
+        private static readonly string[] Summaries = new[]
+        {
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+        
         private readonly ILogger<StockController> _logger;
 
         public StockController(ILogger<StockController> logger)
@@ -22,14 +27,11 @@ namespace Stonks.API.Controllers
         [HttpGet]
         public IEnumerable<Stock> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    Date = DateTime.Now.AddDays(index),
-                    TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
-                })
-                .ToArray();
+            Stock stock = new Stock();
+
+            return new[] {new Stock(), new Stock()};
+
+            // throw new NotImplementedException("Stocks GET not implemented yet");
         }
     }
 }
