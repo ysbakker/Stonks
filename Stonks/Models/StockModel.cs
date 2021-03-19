@@ -1,4 +1,4 @@
-﻿namespace Stonks
+﻿namespace Stonks.Models
 {
     public class StockModel
     {
