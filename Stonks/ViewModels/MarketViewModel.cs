@@ -18,20 +18,23 @@ namespace Stonks
         {
             get
             {
-                ObservableCollection<StockModel> theCollection = new ObservableCollection<StockModel>();
+                ObservableCollection<StockModel> stockCollection = new ObservableCollection<StockModel>();
 
                 if (_stocks != null)
                 {
-                    List<StockModel> entities = (from e in _stocks
-                        where e.Name.Contains(_searchText)
-                        select e).ToList<StockModel>();
-                    if (entities != null && entities.Any())
+                    List<StockModel> stockList = _stocks.Where(stock =>
                     {
-                        theCollection = new ObservableCollection<StockModel>(entities);
+                        string query = _searchText.ToLower();
+                        return stock.Name.ToLower().Contains(query) || stock.Symbol.ToLower().Contains(query);
+                    }).ToList();
+
+                    if (stockList != null && stockList.Any())
+                    {
+                        stockCollection = new ObservableCollection<StockModel>(stockList);
                     }
                 }
 
-                return theCollection;
+                return stockCollection;
             }
         }
 
@@ -45,7 +48,6 @@ namespace Stonks
                     _searchText = value ?? string.Empty;
                     OnPropertyChanged();
 
-                    // Perform the search
                     if (SearchCommand.CanExecute(null))
                     {
                         SearchCommand.Execute(null);
@@ -65,7 +67,6 @@ namespace Stonks
         
         private void DoSearchCommand()
         {
-            // Refresh the list, which will automatically apply the search text
             OnPropertyChanged(nameof(Stocks));
         }
         
