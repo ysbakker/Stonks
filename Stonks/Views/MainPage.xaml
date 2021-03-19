@@ -10,7 +10,8 @@
     
     <StackLayout Padding="10, 0">
         <SearchBar Text="{Binding SearchText}"
-                   SearchCommand="{Binding SearchCommand}" />
+                   SearchCommand="{Binding SearchCommand}"
+                   Placeholder="Search by name or symbol" />
     
         <CollectionView ItemsSource="{Binding Stocks}">
             <CollectionView.ItemTemplate>

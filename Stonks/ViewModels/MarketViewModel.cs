@@ -22,16 +22,12 @@ namespace Stonks
 
                 if (_stocks != null)
                 {
-                    List<StockModel> stockList = _stocks.Where(stock =>
-                    {
-                        string query = _searchText.ToLower();
-                        return stock.Name.ToLower().Contains(query) || stock.Symbol.ToLower().Contains(query);
-                    }).ToList();
+                    string query = _searchText.ToLower();
+                    List<StockModel> stockList = _stocks.Where(stock => 
+                        stock.Name.ToLower().Contains(query) || stock.Symbol.ToLower().Contains(query)).ToList();
 
                     if (stockList != null && stockList.Any())
-                    {
                         stockCollection = new ObservableCollection<StockModel>(stockList);
-                    }
                 }
 
                 return stockCollection;
@@ -49,36 +45,17 @@ namespace Stonks
                     OnPropertyChanged();
 
                     if (SearchCommand.CanExecute(null))
-                    {
                         SearchCommand.Execute(null);
-                    }
                 }
             }
         }
         
-        public ICommand SearchCommand
-        {
-            get
-            {
-                _searchCommand = _searchCommand ?? new Command(DoSearchCommand, CanExecuteSearchCommand);
-                return _searchCommand;
-            }
-        }
-        
-        private void DoSearchCommand()
-        {
-            OnPropertyChanged(nameof(Stocks));
-        }
-        
-        private bool CanExecuteSearchCommand()
-        {
-            return true;
-        }
-        
+        public ICommand SearchCommand => _searchCommand ?? new Command(() => OnPropertyChanged(nameof(Stocks)));
+
         public event PropertyChangedEventHandler PropertyChanged;
-        void OnPropertyChanged([CallerMemberName] string name = "")
+        void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public MarketViewModel()
