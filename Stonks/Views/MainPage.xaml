@@ -16,9 +16,10 @@
                    SearchCommand="{Binding SearchCommand}"
                    Placeholder="Search by name or symbol" />
 
-        <CollectionView ItemsSource="{Binding Stocks}" SelectionMode="Single"
-                        SelectedItem="{Binding SelectedItem}"
-                        SelectionChangedCommand="{Binding StockSelectionChangedCommand}">
+        <CollectionView ItemsSource="{Binding Stocks}"
+                        SelectedItem="{Binding SelectedStock, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding StockSelectionChangedCommand}"
+                        SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="0, 10">
