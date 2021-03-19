@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
 using Stonks.Views;
 using Stonks.Models;
 using Xamarin.Forms;
@@ -16,7 +15,7 @@ namespace Stonks.ViewModels
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
         private Command _searchCommand;
-        public INavigation Navigation { get; set; }
+        public StockModel SelectedStock { get; set; }
 
         public ObservableCollection<StockModel> Stocks
         {
@@ -38,7 +37,6 @@ namespace Stonks.ViewModels
             }
         }
 
-        public StockModel SelectedItem { get; set; }
 
         public string SearchText
         {
@@ -58,7 +56,8 @@ namespace Stonks.ViewModels
 
         public Command StockSelectionChangedCommand => new Command(async () =>
         {
-            await Application.Current.MainPage.Navigation.PushAsync(new StockDetails(SelectedItem));
+            await Application.Current.MainPage.Navigation.PushAsync(
+                new StockDetails(new StockDetailsViewModel(SelectedStock)));
         });
 
         public Command SearchCommand

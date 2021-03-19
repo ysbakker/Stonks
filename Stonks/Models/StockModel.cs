@@ -7,6 +7,10 @@
         public string Value { get; }
         public string Change { get; }
 
+        public StockModel()
+        {
+        }
+
         public StockModel(string name, string symbol, string value, string change)
         {
             Name = name;
