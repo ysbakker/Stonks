@@ -144,3 +144,6 @@ _NCrunch*
 
 # Env
 .env
+
+# appsettings
+Stonks.API/appsettings.Docker.json
