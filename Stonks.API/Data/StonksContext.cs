@@ -10,7 +10,7 @@ namespace Stonks.API.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("jdbc:postgresql://localhost:4002/Stonks");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=4002;Database=Stonks;Username=yorrick;Password=123;timeout=1000;");
         }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
