@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Stonks.API.Data;
 using Stonks.API.Models;
@@ -17,14 +18,14 @@ namespace Stonks.API.Controllers
     {
         private readonly StonksContext _context;
         private readonly ILogger<StocksController> _logger;
+        private IConfiguration _configuration;
         private readonly HttpClient httpClient = new HttpClient();
 
-        public StocksController(StonksContext context, ILogger<StocksController> logger)
+        public StocksController(StonksContext context, ILogger<StocksController> logger, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
-            
-            HttpClient httpClient = new HttpClient();
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -42,7 +43,9 @@ namespace Stonks.API.Controllers
 
             if (stock == null)
             {
-                string uri = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM";
+                string apiKey = _configuration.GetValue<string>("API_KEY");
+                
+                string uri = $"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey={apiKey}";
 
                 using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
 
