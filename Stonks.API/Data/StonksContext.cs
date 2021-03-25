@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Stonks.API.Models;
 
 namespace Stonks.API.Data
@@ -7,10 +8,16 @@ namespace Stonks.API.Data
     {
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<TimeSeries> TimeSeries {get; set; }
+        private readonly IConfiguration _configuration;
+
+        public StonksContext(DbContextOptions<StonksContext> options, IConfiguration configuration) : base(options)
+        {
+            _configuration = configuration;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=4002;Database=Stonks;Username=yorrick;Password=123;timeout=1000;");
+            optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
         }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
