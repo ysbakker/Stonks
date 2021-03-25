@@ -12,11 +12,6 @@ namespace Stonks.API.Controllers
     [Route("[controller]")]
     public class StockController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-        
         private readonly ILogger<StockController> _logger;
 
         public StockController(ILogger<StockController> logger)
@@ -30,8 +25,6 @@ namespace Stonks.API.Controllers
             Stock stock = new Stock();
 
             return new[] {new Stock(), new Stock()};
-
-            // throw new NotImplementedException("Stocks GET not implemented yet");
         }
     }
 }
