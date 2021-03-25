@@ -58,6 +58,7 @@ namespace Stonks.ViewModels
         {
             await Application.Current.MainPage.Navigation.PushAsync(
                 new StockDetails(new StockDetailsViewModel(SelectedStock)));
+            SelectedStock = null;
         });
 
         public Command SearchCommand

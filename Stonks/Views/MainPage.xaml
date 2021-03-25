@@ -17,9 +17,7 @@
                    Placeholder="Search by name or symbol" />
 
         <CollectionView ItemsSource="{Binding Stocks}"
-                        SelectedItem="{Binding SelectedStock, Mode=TwoWay}"
-                        SelectionChangedCommand="{Binding StockSelectionChangedCommand}"
-                        SelectionMode="Single">
+                        SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="0, 10">
@@ -46,6 +44,9 @@
                                Grid.Column="1"
                                HorizontalOptions="End"
                                Text="{Binding Change}" />
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StockSelectionChangedCommand}"></TapGestureRecognizer>
+                        </Grid.GestureRecognizers>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
