@@ -15,8 +15,6 @@ namespace Stonks.ViewModels
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
         private Command _searchCommand;
-        public StockModel SelectedStock { get; set; }
-
         public ObservableCollection<StockModel> Stocks
         {
             get
@@ -54,11 +52,11 @@ namespace Stonks.ViewModels
             }
         }
 
-        public Command StockSelectionChangedCommand => new Command(async () =>
+        public Command StockSelectionChangedCommand => new Command(async (selected) =>
         {
+            StockModel selectedStock = (StockModel) selected;
             await Application.Current.MainPage.Navigation.PushAsync(
-                new StockDetails(new StockDetailsViewModel(SelectedStock)));
-            SelectedStock = null;
+                new StockDetails(new StockDetailsViewModel(selectedStock)));
         });
 
         public Command SearchCommand
