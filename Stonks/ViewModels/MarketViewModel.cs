@@ -14,7 +14,31 @@ namespace Stonks.ViewModels
     {
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
-        private Command _searchCommand;
+        public Command StockSelectedCommand { get; }
+        public Command SearchCommand { get; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        public MarketViewModel()
+        {
+            StockSelectedCommand = new Command(async (selected) =>
+            {
+                StockModel selectedStock = (StockModel) selected;
+                await Application.Current.MainPage.Navigation.PushAsync(
+                    new StockDetails(new StockDetailsViewModel(selectedStock)));
+            });
+            
+            SearchCommand = new Command(() => OnPropertyChanged(nameof(Stocks)));
+            
+            _stocks = new ObservableCollection<StockModel>
+            {
+                new StockModel("Dow Jones Industrial Average", "DOW J", "33.050,98", "+0,15%"),
+                new StockModel("AEX-INDEX", "^AEX", "682,57", "+0,27%"),
+                new StockModel("Apple Inc.", "AAPL", "121,70", "-2,45%"),
+                new StockModel("Microsoft Corporation", "MSFT", "232,77", "-1,80%"),
+                new StockModel("Tesla, Inc.", "TSLA", "677,53", "-3,46%")
+            };
+        }
+        
         public ObservableCollection<StockModel> Stocks
         {
             get
@@ -52,39 +76,9 @@ namespace Stonks.ViewModels
             }
         }
 
-        public Command StockSelectionChangedCommand => new Command(async (selected) =>
-        {
-            StockModel selectedStock = (StockModel) selected;
-            await Application.Current.MainPage.Navigation.PushAsync(
-                new StockDetails(new StockDetailsViewModel(selectedStock)));
-        });
-
-        public Command SearchCommand
-        {
-            get
-            {
-                _searchCommand = _searchCommand ?? new Command(() => OnPropertyChanged(nameof(Stocks)));
-                return _searchCommand;
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public MarketViewModel()
-        {
-            _stocks = new ObservableCollection<StockModel>
-            {
-                new StockModel("Dow Jones Industrial Average", "DOW J", "33.050,98", "+0,15%"),
-                new StockModel("AEX-INDEX", "^AEX", "682,57", "+0,27%"),
-                new StockModel("Apple Inc.", "AAPL", "121,70", "-2,45%"),
-                new StockModel("Microsoft Corporation", "MSFT", "232,77", "-1,80%"),
-                new StockModel("Tesla, Inc.", "TSLA", "677,53", "-3,46%")
-            };
         }
     }
 }
