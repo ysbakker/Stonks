@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,11 +14,11 @@ using Stonks.API.Data;
 namespace Stonks.API.Repositories
 {
     // https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
-    public sealed class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly StonksContext _context;
-        private readonly DbSet<TEntity> _dbSet;
-        private readonly IConfiguration _configuration;
+        protected readonly DbSet<TEntity> _dbSet;
+        protected  readonly IConfiguration _configuration;
 
         public GenericRepository(StonksContext context, IConfiguration configuration)
         {
@@ -54,7 +55,7 @@ namespace Stonks.API.Repositories
             }
         }
 
-        public async Task<TEntity> GetById(object id)
+        public virtual async Task<TEntity> GetById(object id)
         {
             var entity = await _dbSet.FindAsync(id);
 
@@ -67,13 +68,16 @@ namespace Stonks.API.Repositories
             return entity;
         }
 
-        private async Task<TEntity> GetFromExternal(object id)
+        protected virtual async Task<TEntity> GetFromExternal(object id)
         {
             HttpClient httpClient = new HttpClient();
             Console.WriteLine("GOING TO DO AN API CALL BITCHES");
             
             string apiKey = _configuration.GetValue<string>("API_KEY");
-            string uri = $"https://www.alphavantage.co/query?function=OVERVIEW&symbol={id}&apikey={apiKey}";
+            string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:TimeSeries"), id, apiKey);
+
+            Console.WriteLine(uri);
+            
             using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
 
@@ -95,9 +99,6 @@ namespace Stonks.API.Repositories
                         }
                     );
                     
-                    Insert(newEntity);
-                    Save();
-
                     return newEntity;
                 }
                 catch (JsonException) // Invalid JSON
@@ -119,6 +120,11 @@ namespace Stonks.API.Repositories
             _dbSet.Add(entity);
         }
 
+        public void InsertMany(IEnumerable<TEntity> entities)
+        {
+            _dbSet.AddRange(entities);
+        }
+        
         public void Delete(object id)
         {
             var entityToDelete = _dbSet.Find(id);
