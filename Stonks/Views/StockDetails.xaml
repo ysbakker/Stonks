@@ -5,16 +5,22 @@
              xmlns:viewModels="clr-namespace:Stonks.ViewModels;assembly=Stonks"
              x:Class="Stonks.Views.StockDetails"
              Title="{Binding Stock.Name}"
+             xmlns:chartViews="clr-namespace:SkiaChart.Views;assembly=SkiaChart"
+             xmlns:charts="clr-namespace:SkiaChart.Charts;assembly=SkiaChart"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
     <ContentPage.BindingContext>
         <viewModels:StockDetailsViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="{Binding TitleText}"
-                   VerticalOptions="CenterAndExpand"
-                   HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid>
+            <chartViews:ChartCanvas 
+                x:TypeArguments="charts:LineChart"
+                GridLines="10"
+                LabelTextSize="30"
+                Chart="{Binding Chart}"
+                IsVisible="{Binding ShowChart}"
+            />
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
