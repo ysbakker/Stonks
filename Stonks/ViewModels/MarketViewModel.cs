@@ -16,14 +16,26 @@ namespace Stonks.ViewModels
         private StockServices _stockServices = new StockServices();
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
-        private Command _searchCommand;
         private bool _isRefreshing;
-        public StockModel SelectedStock { get; set; }
+        public Command StockSelectedCommand { get; }
+        public Command SearchCommand { get; }
+        public Command RefreshCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
-
-        void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        
+        public MarketViewModel()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            StockSelectedCommand = new Command(async (selected) =>
+            {
+                StockModel selectedStock = (StockModel) selected;
+                await Application.Current.MainPage.Navigation.PushAsync(
+                    new StockDetails(new StockDetailsViewModel(selectedStock)));
+            });
+            
+            SearchCommand = new Command(() => OnPropertyChanged(nameof(Stocks)));
+
+            RefreshCommand = new Command(async () => await GetStocksAsync());
+
+            Task.Run(async () => await GetStocksAsync());
         }
         
         public ObservableCollection<StockModel> Stocks
@@ -59,21 +71,6 @@ namespace Stonks.ViewModels
                     SearchCommand.Execute(null);
             }
         }
-
-        public Command StockSelectionChangedCommand => new Command(async () =>
-        {
-            await Application.Current.MainPage.Navigation.PushAsync(
-                new StockDetails(new StockDetailsViewModel(SelectedStock)));
-        });
-
-        public Command SearchCommand
-        {
-            get
-            {
-                _searchCommand = _searchCommand ?? new Command(() => OnPropertyChanged(nameof(Stocks)));
-                return _searchCommand;
-            }
-        }
         
         public bool IsRefreshing
         {
@@ -84,8 +81,6 @@ namespace Stonks.ViewModels
                 OnPropertyChanged();
             }
         }
-        
-        public Command RefreshCommand { get; set; }
 
         private async Task GetStocksAsync()
         {
@@ -102,12 +97,9 @@ namespace Stonks.ViewModels
             }
         }
 
-        public MarketViewModel()
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            RefreshCommand = new Command(async () => await GetStocksAsync());
-            Task.Run(async () => {
-                await GetStocksAsync();
-            });
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
