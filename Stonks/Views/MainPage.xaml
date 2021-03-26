@@ -36,7 +36,7 @@
                                 FontAttributes="Bold" />
                             <Label Grid.Column="1"
                                 HorizontalOptions="End"
-                                Text="{Binding Value}"
+                                Text="{Binding Price}"
                                 FontAttributes="Bold" />
                             <Label Grid.Row="1"
                                 Grid.Column="0"
