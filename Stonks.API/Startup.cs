@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stonks.API.Data;
+using Stonks.API.Repositories;
 
 namespace Stonks.API
 {
@@ -19,8 +20,10 @@ namespace Stonks.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            
             services.AddDbContext<StonksContext>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -30,9 +33,7 @@ namespace Stonks.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            // app.UseHttpsRedirection();
-
+            
             app.UseRouting();
 
             app.UseAuthorization();

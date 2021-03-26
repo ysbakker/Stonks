@@ -2,23 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Stonks.API.Data;
 
-namespace Stonks.API.Data
+namespace Stonks.API.Repositories
 {
     // https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
-    public class GenericRepository<TEntity> where TEntity : class
+    public sealed class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        internal StonksContext _context;
-        internal DbSet<TEntity> _dbSet;
+        private readonly StonksContext _context;
+        private readonly DbSet<TEntity> _dbSet;
+        private readonly IConfiguration _configuration;
 
-        public GenericRepository(StonksContext context)
+        public GenericRepository(StonksContext context, IConfiguration configuration)
         {
-            this._context = context;
-            this._dbSet = context.Set<TEntity>();
+            _context = context;
+            _configuration = configuration;
+            _dbSet = context.Set<TEntity>();
         }
         
-        public virtual IEnumerable<TEntity> Get(
+        public IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "")
@@ -46,23 +54,78 @@ namespace Stonks.API.Data
             }
         }
 
-        public virtual TEntity GetById(object id)
+        public async Task<TEntity> GetById(object id)
         {
-            return _dbSet.Find(id);
+            var entity = await _dbSet.FindAsync(id);
+
+            if (entity == null)
+            {
+                return await GetFromExternal(id);
+            }
+            
+            Console.WriteLine("Returned entity from DB instead of API!");
+            return entity;
         }
 
-        public virtual void Insert(TEntity entity)
+        private async Task<TEntity> GetFromExternal(object id)
+        {
+            HttpClient httpClient = new HttpClient();
+            Console.WriteLine("GOING TO DO AN API CALL BITCHES");
+            
+            string apiKey = _configuration.GetValue<string>("API_KEY");
+            string uri = $"https://www.alphavantage.co/query?function=OVERVIEW&symbol={id}&apikey={apiKey}";
+            using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+            httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
+
+            // ReSharper disable once PossibleNullReferenceException
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once IsExpressionAlwaysTrue
+            if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "application/json")
+            {
+                var contentStream = await httpResponse.Content.ReadAsStreamAsync();
+
+                try
+                {
+                    var newEntity = await System.Text.Json.JsonSerializer.DeserializeAsync<TEntity>(
+                        contentStream, 
+                        new System.Text.Json.JsonSerializerOptions
+                        {
+                            IgnoreNullValues = true, 
+                            PropertyNameCaseInsensitive = true
+                        }
+                    );
+                    
+                    Insert(newEntity);
+                    Save();
+
+                    return newEntity;
+                }
+                catch (JsonException) // Invalid JSON
+                {
+                    Console.WriteLine("Invalid JSON.");
+
+                    return null;
+                }                
+            }
+            else
+            {
+                Console.WriteLine("HTTP Response was invalid and cannot be deserialised.");
+                return null;
+            }
+        }
+
+        public void Insert(TEntity entity)
         {
             _dbSet.Add(entity);
         }
 
-        public virtual void Delete(object id)
+        public void Delete(object id)
         {
-            TEntity entityToDelete = _dbSet.Find(id);
+            var entityToDelete = _dbSet.Find(id);
             Delete(entityToDelete);
         }
 
-        public virtual void Delete(TEntity entityToDelete)
+        public void Delete(TEntity entityToDelete)
         {
             if (_context.Entry(entityToDelete).State == EntityState.Detached)
             {
@@ -72,10 +135,15 @@ namespace Stonks.API.Data
             _dbSet.Remove(entityToDelete);
         }
 
-        public virtual void Update(TEntity entityToUpdate)
+        public void Update(TEntity entityToUpdate)
         {
             _dbSet.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).State = EntityState.Modified;
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

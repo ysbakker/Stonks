@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Stonks.API.Data;
 using Stonks.API.Models;
+using Stonks.API.Repositories;
 
 namespace Stonks.API.Controllers
 {
@@ -16,16 +17,16 @@ namespace Stonks.API.Controllers
     [Route("stocks")]
     public class StocksController : ControllerBase
     {
-        private readonly StonksContext _context;
         private readonly ILogger<StocksController> _logger;
-        private IConfiguration _configuration;
-        private readonly HttpClient httpClient = new HttpClient();
-
-        public StocksController(StonksContext context, ILogger<StocksController> logger, IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IGenericRepository<Stock> _stocksRepository;
+        
+        public StocksController(ILogger<StocksController> logger, IConfiguration configuration, IGenericRepository<Stock> stocksRepository)
         {
-            _context = context;
             _logger = logger;
             _configuration = configuration;
+            _stocksRepository = stocksRepository;
         }
 
         [HttpGet]
@@ -39,50 +40,8 @@ namespace Stonks.API.Controllers
         [HttpGet("{symbol}")]
         public async Task<ActionResult<Stock>> GetStockItem(string symbol)
         {
-            var stock = await _context.Stocks.FindAsync(symbol);
-
-            if (stock == null)
-            {
-                string apiKey = _configuration.GetValue<string>("API_KEY");
-                
-                string uri = $"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey={apiKey}";
-
-                using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-
-                httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
-
-                // ReSharper disable once PossibleNullReferenceException
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                // ReSharper disable once IsExpressionAlwaysTrue
-                if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "application/json")
-                {
-                    var contentStream = await httpResponse.Content.ReadAsStreamAsync();
-
-                    try
-                    {
-                        return await System.Text.Json.JsonSerializer.DeserializeAsync<Stock>(
-                            contentStream, 
-                            new System.Text.Json.JsonSerializerOptions
-                            {
-                                IgnoreNullValues = true, 
-                                PropertyNameCaseInsensitive = true
-                            }
-                        );
-                    }
-                    catch (JsonException) // Invalid JSON
-                    {
-                        Console.WriteLine("Invalid JSON.");
-                        return NotFound();
-                    }                
-                }
-                else
-                {
-                    Console.WriteLine("HTTP Response was invalid and cannot be deserialised.");
-                }
-
-                return NotFound();
-            }
-
+            var stock = await _stocksRepository.GetById(symbol);
+            
             return stock;
         }
     }
