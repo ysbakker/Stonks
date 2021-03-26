@@ -6,6 +6,7 @@
              x:Class="Stonks.Views.StockDetails"
              Title="{Binding Stock.Name}"
              xmlns:chartViews="clr-namespace:SkiaChart.Views;assembly=SkiaChart"
+             xmlns:skiaSharp="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:charts="clr-namespace:SkiaChart.Charts;assembly=SkiaChart"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
@@ -19,7 +20,7 @@
                 GridLines="10"
                 LabelTextSize="30"
                 Chart="{Binding Chart}"
-                IsVisible="{Binding ShowChart}"
+                GridColor="{Binding GridColor}"
             />
         </Grid>
     </ContentPage.Content>

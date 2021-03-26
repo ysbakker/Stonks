@@ -1,19 +1,22 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using SkiaChart;
 using SkiaChart.Charts;
+using SkiaSharp;
 using Stonks.Models;
+using Stonks.ServicesHandler;
 
 namespace Stonks.ViewModels
 {
-    public class StockDetailsViewModel
+    public class StockDetailsViewModel : INotifyPropertyChanged
     {
+        private readonly StockServices _stockServices = new();
         public StockModel Stock { get; }
-        public bool ShowChart { get; }
-        private List<string> Labels { get; }
-        private List<float> Values { get; }
-        public Chart<LineChart> Chart { get; }
+        public Chart<LineChart> Chart { get; set; }
 
         public StockDetailsViewModel()
         {
@@ -22,20 +25,47 @@ namespace Stonks.ViewModels
 
         public StockDetailsViewModel(StockModel stock)
         {
-            _ = GetChartData();
-            Labels = new List<string>();
-            Values = new List<float>();
-            ShowChart = false;
             Stock = stock;
             Chart = null;
+            _ = GetChartData();
         }
 
         private async Task GetChartData()
         {
-            HttpClient client = new();
-            HttpResponseMessage response = await client.GetAsync("http://localhost:3000/stocks/TSLA/history");
-            response.EnsureSuccessStatusCode();
-            LineChart lineChart = new(Labels, Values);
+            List<StocksTimeSeriesModel> history = await _stockServices.GetStockTimeSeries(Stock);
+            var labels = history.Select(x => x.Date).ToList();
+            var openPrices = history.Select(x => x.Open).ToList();
+            var closePrices = history.Select(x => x.Close).ToList();
+            var highPrices = history.Select(x => x.High).ToList();
+            var lowPrices = history.Select(x => x.Low).ToList();
+
+            LineChart openPricesChart = new(labels, openPrices) {
+                Width = 4,
+                ChartColor = SKColors.LightGray
+            };
+            LineChart closePricesChart = new(labels, closePrices) {
+                Width = 4,
+                ChartColor = SKColors.DarkBlue
+            };
+            LineChart highPricesChart = new(labels, highPrices) {
+                Width = 4,
+                ChartColor = SKColors.LightGreen
+            };
+            LineChart lowPricesChart = new(labels, lowPrices) {
+                Width = 4,
+                ChartColor = SKColors.LightPink
+            };
+
+            Chart = new Chart<LineChart>(new[] {openPricesChart, closePricesChart, highPricesChart, lowPricesChart});
+
+            OnPropertyChanged(nameof(Chart));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
