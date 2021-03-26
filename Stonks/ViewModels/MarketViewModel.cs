@@ -13,7 +13,7 @@ namespace Stonks.ViewModels
 {
     public class MarketViewModel : INotifyPropertyChanged
     {
-        private StockServices _stockServices = new StockServices();
+        private readonly StockServices _stockServices = new();
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
         private bool _isRefreshing;

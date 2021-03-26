@@ -7,7 +7,7 @@ namespace Stonks.ServicesHandler
 {
     public class StockServices
     {
-        private StockMap<StockModel> _stocksRest = new StockMap<StockModel>();
+        private readonly StockMap<StockModel> _stocksRest = new();
         
         public async Task<List<StockModel>> GetStocks()
         {
