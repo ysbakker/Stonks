@@ -149,5 +149,3 @@ _NCrunch*
 Stonks.API/appsettings.Docker.json
 Stonks.API/appsettings.Development.json
 
-# json-server
-db.json
