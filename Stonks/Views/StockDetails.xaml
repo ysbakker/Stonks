@@ -19,6 +19,7 @@
                 x:TypeArguments="charts:LineChart"
                 GridLines="10"
                 LabelTextSize="30"
+                CanShowLegend="True"
                 Chart="{Binding Chart}"
                 GridColor="{Binding GridColor}"
             />

@@ -15,6 +15,7 @@ namespace Stonks.ViewModels
     public class StockDetailsViewModel : INotifyPropertyChanged
     {
         private readonly StockServices _stockServices = new();
+        public SKColor GridColor { get; }
         public StockModel Stock { get; }
         public Chart<LineChart> Chart { get; set; }
 
@@ -25,6 +26,7 @@ namespace Stonks.ViewModels
 
         public StockDetailsViewModel(StockModel stock)
         {
+            GridColor = SKColors.LightGray;
             Stock = stock;
             Chart = null;
             _ = GetChartData();
@@ -40,23 +42,31 @@ namespace Stonks.ViewModels
             var lowPrices = history.Select(x => x.Low).ToList();
 
             LineChart openPricesChart = new(labels, openPrices) {
+                ChartName = "open",
                 Width = 4,
                 ChartColor = SKColors.LightGray
             };
             LineChart closePricesChart = new(labels, closePrices) {
+                ChartName = "close",
                 Width = 4,
                 ChartColor = SKColors.DarkBlue
             };
             LineChart highPricesChart = new(labels, highPrices) {
+                ChartName = "high",
                 Width = 4,
                 ChartColor = SKColors.LightGreen
             };
             LineChart lowPricesChart = new(labels, lowPrices) {
+                ChartName = "low",
                 Width = 4,
                 ChartColor = SKColors.LightPink
             };
 
-            Chart = new Chart<LineChart>(new[] {openPricesChart, closePricesChart, highPricesChart, lowPricesChart});
+            Chart = new Chart<LineChart>(new[] {openPricesChart, highPricesChart, lowPricesChart, closePricesChart})
+            {
+                XTitle = "Date",
+                YTitle = "Price"
+            };
 
             OnPropertyChanged(nameof(Chart));
         }
