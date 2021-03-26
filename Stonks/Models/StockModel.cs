@@ -1,21 +1,27 @@
-﻿namespace Stonks.Models
+﻿using Newtonsoft.Json;
+
+namespace Stonks.Models
 {
     public class StockModel
     {
-        public string Name { get; }
-        public string Symbol { get; }
-        public string Value { get; }
-        public string Change { get; }
+        [JsonProperty("symbol")]
+        public string Symbol { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("price")]
+        public string Price { get; set; }
+        [JsonProperty("change")]
+        public string Change { get; set; }
 
         public StockModel()
         {
         }
 
-        public StockModel(string name, string symbol, string value, string change)
+        public StockModel(string symbol, string name, string price, string change)
         {
-            Name = name;
             Symbol = symbol;
-            Value = value;
+            Name = name;
+            Price = price;
             Change = change;
         }
     }

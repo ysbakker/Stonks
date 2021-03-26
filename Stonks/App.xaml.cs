@@ -1,4 +1,5 @@
 ﻿using System;
+using Stonks.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
