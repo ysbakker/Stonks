@@ -11,8 +11,7 @@ namespace Stonks.ServicesHandler
         
         public async Task<List<StockModel>> GetStocks()
         {
-            var getStocks = await _stocksRest.GetAllStocks();
-            return getStocks;
+            return await _stocksRest.GetAllStocks();
         }
     }
 }

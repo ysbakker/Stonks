@@ -16,39 +16,43 @@
                    SearchCommand="{Binding SearchCommand}"
                    Placeholder="Search by name or symbol" />
 
-        <CollectionView ItemsSource="{Binding Stocks}"
-                        SelectedItem="{Binding SelectedStock, Mode=TwoWay}"
-                        SelectionChangedCommand="{Binding StockSelectionChangedCommand}"
-                        SelectionMode="Single">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="0, 10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0"
-                               Text="{Binding Symbol}"
-                               FontAttributes="Bold" />
-                        <Label Grid.Column="1"
-                               HorizontalOptions="End"
-                               Text="{Binding Price}"
-                               FontAttributes="Bold" />
-                        <Label Grid.Row="1"
-                               Grid.Column="0"
-                               Text="{Binding Name}"
-                               FontAttributes="Italic" />
-                        <Label Grid.Row="1"
-                               Grid.Column="1"
-                               HorizontalOptions="End"
-                               Text="{Binding Change}" />
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        
+        <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Stocks}"
+                            SelectedItem="{Binding SelectedStock, Mode=TwoWay}"
+                            SelectionChangedCommand="{Binding StockSelectionChangedCommand}"
+                            SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="0, 10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0"
+                                   Text="{Binding Symbol}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Column="1"
+                                   HorizontalOptions="End"
+                                   Text="{Binding Price}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="{Binding Name}"
+                                   FontAttributes="Italic" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   HorizontalOptions="End"
+                                   Text="{Binding Change}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
     </StackLayout>
 </ContentPage>

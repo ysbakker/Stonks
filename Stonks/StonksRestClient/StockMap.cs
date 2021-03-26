@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -13,8 +14,7 @@ namespace Stonks.StonksRestClient
         public async Task<List<T>> GetAllStocks()
         {
             var json = await _httpClient.GetStringAsync(StonksApi);
-            var getStockModels = JsonConvert.DeserializeObject<List<T>>(json);
-            return getStockModels;
+            return JsonConvert.DeserializeObject<List<T>>(json);
         }
     }
 }

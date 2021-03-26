@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -16,9 +17,15 @@ namespace Stonks.ViewModels
         private ObservableCollection<StockModel> _stocks;
         private string _searchText = string.Empty;
         private Command _searchCommand;
-        private bool _isBusy;
+        private bool _isRefreshing;
         public StockModel SelectedStock { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        
         public ObservableCollection<StockModel> Stocks
         {
             get
@@ -37,8 +44,7 @@ namespace Stonks.ViewModels
                 return stockCollection;
             }
         }
-
-
+        
         public string SearchText
         {
             get => _searchText;
@@ -69,52 +75,38 @@ namespace Stonks.ViewModels
             }
         }
         
-        public bool IsBusy
+        public bool IsRefreshing
         {
-            get => _isBusy;
+            get => _isRefreshing;
             set
             {
-                _isBusy = value;
+                _isRefreshing = value;
                 OnPropertyChanged();
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         
-        private async Task InitializeGetStocksAsync()
+        public Command RefreshCommand { get; set; }
+
+        private async Task GetStocksAsync()
         {
             try
             {
-                IsBusy = true;
-
+                IsRefreshing = true;
                 var stockList = await _stockServices.GetStocks();
                 _stocks = new ObservableCollection<StockModel>(stockList);
-            } // TODO: implement catch
+                OnPropertyChanged(nameof(Stocks));
+            }
             finally
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
 
         public MarketViewModel()
         {
-            // _stocks = new ObservableCollection<StockModel>
-            // {
-            //     new StockModel("DOW J", "Dow Jones Industrial Average", "33.050,98", "+0,15%"),
-            //     new StockModel("^AEX", "AEX-INDEX", "682,57", "+0,27%"),
-            //     new StockModel("AAPL", "Apple Inc.", "121,70", "-2,45%"),
-            //     new StockModel("MSFT", "Microsoft Corporation", "232,77", "-1,80%"),
-            //     new StockModel("TSLA", "Tesla, Inc.", "677,53", "-3,46%")
-            // };
-            
-            
+            RefreshCommand = new Command(async () => await GetStocksAsync());
             Task.Run(async () => {
-                await InitializeGetStocksAsync();
+                await GetStocksAsync();
             });
         }
     }
