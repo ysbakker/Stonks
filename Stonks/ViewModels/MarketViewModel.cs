@@ -48,7 +48,7 @@ namespace Stonks.ViewModels
                 
                 var query = _searchText.ToLower();
                 var stockList = _stocks.Where(stock =>
-                    stock.Name.ToLower().Contains(query) || stock.Symbol.ToLower().Contains(query)).ToList();
+                    stock.Symbol.ToLower().Contains(query)).ToList();
 
                 if (stockList.Any())
                     stockCollection = new ObservableCollection<StockModel>(stockList);
