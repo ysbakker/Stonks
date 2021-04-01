@@ -45,8 +45,6 @@ namespace Stonks.API.Controllers
         public async Task<ActionResult> GetQuoteItem(string symbol)
         {
             var quote = await _quotesRepository.GetById(symbol);
-
-            Console.WriteLine("A building is a " + quote.Symbol);
             
             if (quote == null)
                 return NotFound(symbol);

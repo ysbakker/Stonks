@@ -21,47 +21,17 @@ namespace Stonks.API.Repositories
         private readonly StonksContext _context;
         protected readonly DbSet<TEntity> _dbSet;
         protected  readonly IConfiguration _configuration;
-        private readonly JsonConverter _converter;
 
-        public GenericRepository(StonksContext context, IConfiguration configuration, JsonConverter<TEntity> converter)
+        public GenericRepository(StonksContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
             _dbSet = context.Set<TEntity>();
-            _converter = converter;
         }
 
         public virtual IEnumerable<TEntity> GetAll()
         {
             return _dbSet.ToList();
-        }
-
-        public IEnumerable<TEntity> Get(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "")
-        {
-            IQueryable<TEntity> query = _dbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            if (orderBy != null)
-            {
-                return orderBy(query).ToList();
-            }
-            else
-            {
-                return query.ToList();
-            }
         }
 
         public virtual async Task<TEntity> GetById(object id)
@@ -70,8 +40,6 @@ namespace Stonks.API.Repositories
             if (entity == null)
             {
                 entity = await GetFromExternal(id);
-
-                Console.WriteLine(entity);
                 
                 if (_context.Entry<TEntity>(entity).IsKeySet)
                 {
@@ -114,33 +82,15 @@ namespace Stonks.API.Repositories
                                 JsonNumberHandling.AllowReadingFromString |
                                 JsonNumberHandling.WriteAsString,
                             WriteIndented = true,
-                            Converters = { _converter },
                         }
                     );
-                    
-                    /*var t = newEntity.RootElement.GetProperty("Global Quote").ToString();
-                    var serializedEntity = System.Text.Json.JsonSerializer.Deserialize<TEntity>(
-                        t,
-                        new System.Text.Json.JsonSerializerOptions
-                        {
-                            IgnoreNullValues = true, 
-                            PropertyNameCaseInsensitive = true,
-                            NumberHandling =
-                                JsonNumberHandling.AllowReadingFromString |
-                                JsonNumberHandling.WriteAsString,
-                            WriteIndented = true,
-                            Converters = { _converter }
-                        }
-                    );*/
                     
                     return newEntity;
                 }
                 catch (JsonException jsonException) // Invalid JSON
                 {
                     Console.WriteLine("Invalid JSON.");
-
                     Console.WriteLine(jsonException.Message);
-
                     return null;
                 }                
             }

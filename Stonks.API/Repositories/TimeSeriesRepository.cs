@@ -17,7 +17,7 @@ namespace Stonks.API.Repositories
 {
     public class TimeSeriesRepository : GenericRepository<TimeSeries>
     {
-        public TimeSeriesRepository(StonksContext context, IConfiguration configuration, JsonConverter<TimeSeries> converter) : base(context, configuration, converter)
+        public TimeSeriesRepository(StonksContext context, IConfiguration configuration) : base(context, configuration)
         {
             
         }
@@ -33,8 +33,6 @@ namespace Stonks.API.Repositories
                 
                 string apiKey = _configuration.GetValue<string>("API_KEY");
                 string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:TimeSeries"), symbol, apiKey);
-
-                Console.WriteLine(uri);
                 
                 var temp = await httpClient.GetFromJsonAsync<JsonDocument>(
                     uri, 
@@ -43,11 +41,6 @@ namespace Stonks.API.Repositories
                         IgnoreNullValues = true, 
                         PropertyNameCaseInsensitive = true,
                     });
-
-                foreach (var jd in temp.RootElement.EnumerateObject())
-                {
-                    Console.WriteLine(jd);
-                }
                 
                 if (temp == null) return null;
 

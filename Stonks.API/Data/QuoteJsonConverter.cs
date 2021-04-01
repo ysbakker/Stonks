@@ -30,14 +30,11 @@ namespace Stonks.API.Data
 
             var quote = new Quote();
             var startDepth = reader.CurrentDepth;
-            Console.WriteLine("Start Depth " + startDepth);
 
             while (reader.Read())
             {
-                Console.WriteLine("Current Depth " + reader.CurrentDepth);
                 if (reader.TokenType == JsonTokenType.EndObject && reader.CurrentDepth == startDepth)
                 {
-                    Console.WriteLine("gonna return now!");
                     return quote;
                 }
 
