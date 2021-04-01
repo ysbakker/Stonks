@@ -12,10 +12,10 @@ namespace StonksML.ConsoleApp
             // Create single instance of sample data from first line of dataset for model input
             ModelInput sampleData = new ModelInput()
             {
-                Open = 606.16F,
-                High = 620.94F,
-                Low = 605.20F,
-                Volume = 1579588F,
+                Open = 574.72F,
+                High = 618.60F,
+                Low = 565.35F,
+                Volume = 120F,
             };
 
             // Make a single prediction on the sample data and print results
