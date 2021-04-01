@@ -11,6 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="SkiaChart.Forms" Version="1.2.50" />
         <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
         <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" />
         <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
