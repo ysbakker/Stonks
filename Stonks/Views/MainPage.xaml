@@ -38,10 +38,10 @@
                                 HorizontalOptions="End"
                                 Text="{Binding Price}"
                                 FontAttributes="Bold" />
-                            <Label Grid.Row="1"
-                                Grid.Column="0"
-                                Text="{Binding Volume, StringFormat='Volume: {0}'}"
-                                FontAttributes="Italic" />
+                            <!-- <Label Grid.Row="1" -->
+                            <!--     Grid.Column="0" -->
+                            <!--     Text="{Binding Name}" -->
+                            <!--     FontAttributes="Italic" /> -->
                             <Label Grid.Row="1"
                                 Grid.Column="1"
                                 HorizontalOptions="End"

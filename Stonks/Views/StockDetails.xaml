@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:Stonks.ViewModels;assembly=Stonks"
              x:Class="Stonks.Views.StockDetails"
-             Title="{Binding Stock.Name}"
+             Title="{Binding Stock.Symbol}"
              xmlns:chartViews="clr-namespace:SkiaChart.Views;assembly=SkiaChart"
              xmlns:skiaSharp="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:charts="clr-namespace:SkiaChart.Charts;assembly=SkiaChart"
