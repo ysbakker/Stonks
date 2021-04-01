@@ -22,7 +22,7 @@ namespace Stonks.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient = new HttpClient();
         private readonly IGenericRepository<Stock> _stocksRepository;
-        
+
         public StocksController(ILogger<StocksController> logger, IConfiguration configuration, IGenericRepository<Stock> stocksRepository)
         {
             _logger = logger;
@@ -35,7 +35,7 @@ namespace Stonks.API.Controllers
         {
             Stock stock = new Stock();
 
-            return new[] {new Stock(), new Stock()};
+            return new[] { new Stock(), new Stock() };
         }
         
         [HttpGet("{symbol}")]

@@ -5,11 +5,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Stonks.API.Data;
+using Stonks.API.Models;
 
 namespace Stonks.API.Repositories
 {
@@ -19,12 +21,14 @@ namespace Stonks.API.Repositories
         private readonly StonksContext _context;
         protected readonly DbSet<TEntity> _dbSet;
         protected  readonly IConfiguration _configuration;
+        private readonly JsonConverter _converter;
 
-        public GenericRepository(StonksContext context, IConfiguration configuration)
+        public GenericRepository(StonksContext context, IConfiguration configuration, JsonConverter<TEntity> converter)
         {
             _context = context;
             _configuration = configuration;
             _dbSet = context.Set<TEntity>();
+            _converter = converter;
         }
 
         public virtual IEnumerable<TEntity> GetAll()
@@ -63,13 +67,19 @@ namespace Stonks.API.Repositories
         public virtual async Task<TEntity> GetById(object id)
         {
             var entity = await _dbSet.FindAsync(id);
-
             if (entity == null)
             {
-                return await GetFromExternal(id);
+                entity = await GetFromExternal(id);
+
+                Console.WriteLine(entity);
+                
+                if (_context.Entry<TEntity>(entity).IsKeySet)
+                {
+                    _context.Add(entity);
+                    Save();
+                }
             }
             
-            Console.WriteLine("Returned entity from DB instead of API!");
             return entity;
         }
 
@@ -81,8 +91,6 @@ namespace Stonks.API.Repositories
             string apiKey = _configuration.GetValue<string>("API_KEY");
             string classname = typeof(TEntity).Name;
             string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:" + classname), id, apiKey);
-
-            Console.WriteLine(uri);
             
             using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
@@ -101,18 +109,37 @@ namespace Stonks.API.Repositories
                         new System.Text.Json.JsonSerializerOptions
                         {
                             IgnoreNullValues = true, 
-                            PropertyNameCaseInsensitive = true
+                            PropertyNameCaseInsensitive = true,
+                            NumberHandling =
+                                JsonNumberHandling.AllowReadingFromString |
+                                JsonNumberHandling.WriteAsString,
+                            WriteIndented = true,
+                            Converters = { _converter },
                         }
                     );
-
-                    if (_context.Entry<TEntity>(newEntity).IsKeySet)
-                    Save();
+                    
+                    /*var t = newEntity.RootElement.GetProperty("Global Quote").ToString();
+                    var serializedEntity = System.Text.Json.JsonSerializer.Deserialize<TEntity>(
+                        t,
+                        new System.Text.Json.JsonSerializerOptions
+                        {
+                            IgnoreNullValues = true, 
+                            PropertyNameCaseInsensitive = true,
+                            NumberHandling =
+                                JsonNumberHandling.AllowReadingFromString |
+                                JsonNumberHandling.WriteAsString,
+                            WriteIndented = true,
+                            Converters = { _converter }
+                        }
+                    );*/
                     
                     return newEntity;
                 }
-                catch (JsonException) // Invalid JSON
+                catch (JsonException jsonException) // Invalid JSON
                 {
                     Console.WriteLine("Invalid JSON.");
+
+                    Console.WriteLine(jsonException.Message);
 
                     return null;
                 }                

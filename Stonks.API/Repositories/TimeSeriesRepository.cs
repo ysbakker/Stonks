@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Stonks.API.Data;
@@ -16,7 +17,7 @@ namespace Stonks.API.Repositories
 {
     public class TimeSeriesRepository : GenericRepository<TimeSeries>
     {
-        public TimeSeriesRepository(StonksContext context, IConfiguration configuration) : base(context, configuration)
+        public TimeSeriesRepository(StonksContext context, IConfiguration configuration, JsonConverter<TimeSeries> converter) : base(context, configuration, converter)
         {
             
         }
@@ -35,7 +36,7 @@ namespace Stonks.API.Repositories
 
                 Console.WriteLine(uri);
                 
-                var temp = await httpClient.GetFromJsonAsync<IEnumerable<TimeSeries>>(
+                var temp = await httpClient.GetFromJsonAsync<JsonDocument>(
                     uri, 
                     new System.Text.Json.JsonSerializerOptions
                     {
@@ -43,17 +44,25 @@ namespace Stonks.API.Repositories
                         PropertyNameCaseInsensitive = true,
                     });
 
-                // if (temp != null && temp.RootElement.GetArrayLength() == 0) return timeSeries;
-                //
+                foreach (var jd in temp.RootElement.EnumerateObject())
+                {
+                    Console.WriteLine(jd);
+                }
+                
+                if (temp == null) return null;
+
                 // JsonElement meta = temp.RootElement.GetProperty("Meta Data");
-                // JsonElement data = temp.RootElement.GetProperty("Time Series (Daily)");
-                // // 
-                // foreach (var property in data.EnumerateObject().Where(prop => DateTime.Parse(prop.Name) > DateTime.Parse("2021-01-01")))
-                // {
-                //     JsonElement company = meta.GetProperty("Symbol");
-                //     // var newEntry = property.Value.EnumerateObject().Cast<TimeSeries>().ToList();
-                //     // timeSeries.Append(property.Value);
-                // }
+                JsonElement data = temp.RootElement.GetProperty("Time Series (Daily)");
+
+                foreach (var property in data.EnumerateObject().Where(prop => DateTime.Parse(prop.Name) > DateTime.Parse("2021-01-01")))
+                {
+                    // JsonElement company = meta.GetProperty("Symbol");
+                    var series = new TimeSeries();
+                    series.TimeStamp = DateTime.Parse(property.Name);
+
+                    // var newEntry = property.Value.EnumerateObject().Cast<TimeSeries>().ToList();
+                    // timeSeries.Append(property.Value);
+                }
 
             }
 

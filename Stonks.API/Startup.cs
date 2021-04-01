@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,8 @@ namespace Stonks.API
             
             services.AddDbContext<StonksContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            // services.AddScoped(typeof(IGenericRepository<TimeSeries>), typeof(TimeSeriesRepository));
+            services.AddScoped(typeof(JsonConverter<Quote>), typeof(QuoteJsonConverter));
+            services.AddScoped(typeof(JsonConverter<TimeSeries>), typeof(TimeSeriesJsonConverter));
             services.AddScoped<TimeSeriesRepository>();
             services.AddControllers();
         }
