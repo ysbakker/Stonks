@@ -21,9 +21,9 @@ namespace Stonks.API.Controllers
         private readonly ILogger<TimeSeriesController> _logger;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient = new HttpClient();
-        private readonly IGenericRepository<TimeSeries> _timeseriesRepository;
+        private readonly TimeSeriesRepository _timeseriesRepository;
         
-        public TimeSeriesController(ILogger<TimeSeriesController> logger, IConfiguration configuration, IGenericRepository<TimeSeries> timeseriesRepository)
+        public TimeSeriesController(ILogger<TimeSeriesController> logger, IConfiguration configuration, TimeSeriesRepository timeseriesRepository)
         {
             _logger = logger;
             _configuration = configuration;
@@ -39,12 +39,14 @@ namespace Stonks.API.Controllers
         }
         
         [HttpGet("{symbol}")]
-        public IEnumerable<TimeSeries> GetBySymbol(string symbol)
+        public async Task<IEnumerable<TimeSeries>> GetBySymbol(string symbol)
         {
-            Expression<Func<TimeSeries, bool>> filterByName = (entity) => entity.Symbol == symbol; 
-            var stock = _timeseriesRepository.Get(filter: filterByName);
-            
-            return stock;
+            // Expression<Func<TimeSeries, bool>> filterByName = (entity) => entity.Symbol == symbol; 
+            // var stock = _timeseriesRepository.Get(filter: filterByName);
+            //
+            // return stock;
+
+            return await _timeseriesRepository.GetAllById(symbol);
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Stonks.API.Repositories
     {
         IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includedProperties = "");
 
+        public IEnumerable<TEntity> GetAll();
+
         public Task<TEntity> GetById(object id);
 
         public void Insert(TEntity entity);

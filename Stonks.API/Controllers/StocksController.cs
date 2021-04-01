@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -38,10 +39,15 @@ namespace Stonks.API.Controllers
         }
         
         [HttpGet("{symbol}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Stock>> GetStockItem(string symbol)
         {
             var stock = await _stocksRepository.GetById(symbol);
-            
+
+            if (stock == null)
+                return NotFound(symbol);
+
             return stock;
         }
     }

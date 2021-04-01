@@ -26,7 +26,12 @@ namespace Stonks.API.Repositories
             _configuration = configuration;
             _dbSet = context.Set<TEntity>();
         }
-        
+
+        public virtual IEnumerable<TEntity> GetAll()
+        {
+            return _dbSet.ToList();
+        }
+
         public IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -74,7 +79,8 @@ namespace Stonks.API.Repositories
             Console.WriteLine("GOING TO DO AN API CALL BITCHES");
             
             string apiKey = _configuration.GetValue<string>("API_KEY");
-            string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:TimeSeries"), id, apiKey);
+            string classname = typeof(TEntity).Name;
+            string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:" + classname), id, apiKey);
 
             Console.WriteLine(uri);
             
@@ -98,6 +104,9 @@ namespace Stonks.API.Repositories
                             PropertyNameCaseInsensitive = true
                         }
                     );
+
+                    if (_context.Entry<TEntity>(newEntity).IsKeySet)
+                    Save();
                     
                     return newEntity;
                 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stonks.API.Data;
+using Stonks.API.Models;
 using Stonks.API.Repositories;
 
 namespace Stonks.API
@@ -23,6 +24,8 @@ namespace Stonks.API
             
             services.AddDbContext<StonksContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            // services.AddScoped(typeof(IGenericRepository<TimeSeries>), typeof(TimeSeriesRepository));
+            services.AddScoped<TimeSeriesRepository>();
             services.AddControllers();
         }
 
