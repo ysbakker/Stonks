@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using SkiaChart;
@@ -35,11 +34,11 @@ namespace Stonks.ViewModels
         private async Task GetChartData()
         {
             List<StocksTimeSeriesModel> history = await _stockServices.GetStockTimeSeries(Stock);
-            var labels = history.Select(x => x.Date).ToList();
-            var openPrices = history.Select(x => x.Open).ToList();
-            var closePrices = history.Select(x => x.Close).ToList();
-            var highPrices = history.Select(x => x.High).ToList();
-            var lowPrices = history.Select(x => x.Low).ToList();
+            var labels = history.Select(x => x.Date).Reverse().ToList();
+            var openPrices = history.Select(x => x.Open).Reverse().ToList();
+            var closePrices = history.Select(x => x.Close).Reverse().ToList();
+            var highPrices = history.Select(x => x.High).Reverse().ToList();
+            var lowPrices = history.Select(x => x.Low).Reverse().ToList();
 
             LineChart openPricesChart = new(labels, openPrices) {
                 ChartName = "open",

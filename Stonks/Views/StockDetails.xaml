@@ -9,20 +9,20 @@
              xmlns:skiaSharp="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:charts="clr-namespace:SkiaChart.Charts;assembly=SkiaChart"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             ios:Page.UseSafeArea="true">
+             ios:Page.UseSafeArea="true"
+             ios:NavigationPage.PrefersLargeTitles="True">
     <ContentPage.BindingContext>
         <viewModels:StockDetailsViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <Grid>
-            <chartViews:ChartCanvas 
+        <Grid Padding="10">
+            <chartViews:ChartCanvas
                 x:TypeArguments="charts:LineChart"
                 GridLines="10"
                 LabelTextSize="30"
                 CanShowLegend="True"
                 Chart="{Binding Chart}"
-                GridColor="{Binding GridColor}"
-            />
+                GridColor="{Binding GridColor}" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>
