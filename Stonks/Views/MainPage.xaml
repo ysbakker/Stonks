@@ -29,12 +29,12 @@
                                 SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame BackgroundColor="#fafafa"
+                            <Frame BackgroundColor="{AppThemeBinding Dark={StaticResource DarkBackgroundColorSecondary}, Light={StaticResource LightBackgroundColorSecondary}}"
                                    CornerRadius="0"
                                    Margin="0"
                                    Padding="10"
                                    HasShadow="False"
-                                   BorderColor="#e6e6e6">
+                                   BorderColor="{AppThemeBinding Dark={StaticResource DarkSecondaryColor}, Light={StaticResource LightSecondaryColor}}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -64,7 +64,7 @@
                                            CornerRadius="5"
                                            Padding="0"
                                            HasShadow="False"
-                                           WidthRequest="85"
+                                           WidthRequest="95"
                                            BackgroundColor="{Binding ChangePercent,
                                             Converter={StaticResource PercentColorConverter}}" >
                                         <Label Text="{Binding ChangePercent}"

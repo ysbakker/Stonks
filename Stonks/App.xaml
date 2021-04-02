@@ -3,6 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Stonks.App">
     <Application.Resources>
+        <!-- Light colors -->
+        <Color x:Key="LightBackgroundColor">White</Color>
+        <Color x:Key="LightBackgroundColorSecondary">#fafafa</Color>
+        <Color x:Key="LightNavigationBarColor">WhiteSmoke</Color>
+        <Color x:Key="LightPrimaryColor">Black</Color>
+        <Color x:Key="LightSecondaryColor">#e6e6e6</Color>
+        <Color x:Key="LightPrimaryTextColor">Black</Color>
+        <Color x:Key="LightSecondaryTextColor">White</Color>
+        <Color x:Key="LightTertiaryTextColor">Gray</Color>
 
+        <!-- Dark colors -->
+        <Color x:Key="DarkBackgroundColor">Black</Color>
+        <Color x:Key="DarkBackgroundColorSecondary">#1C1C1E</Color>
+        <Color x:Key="DarkBackgroundColorTertiary">#2C2C2E</Color>
+        <Color x:Key="DarkNavigationBarColor">#1C1C1E</Color>
+        <Color x:Key="DarkPrimaryColor">#767680</Color>
+        <Color x:Key="DarkSecondaryColor">#545458</Color>
+        <Color x:Key="DarkTertiaryaryColor">#3A3A3C</Color>
+        <Color x:Key="DarkPrimaryTextColor">White</Color>
+        <Color x:Key="DarkSecondaryTextColor">#EBEBF5</Color>
+        <Color x:Key="DarkTertiaryTextColor">WhiteSmoke</Color>
     </Application.Resources>
 </Application>
