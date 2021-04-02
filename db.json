@@ -7,10 +7,10 @@
       "low": "641.1100",
       "price": "667.9300",
       "volume": "33337288",
-      "latest": "2021-03-31",
-      "previous": "635.6200",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "635.6200",
       "change": "32.3100",
-      "percent": "5.0832%"
+      "changePercent": "5.0832%"
     },
     {
       "symbol": "AAPL",
@@ -19,10 +19,10 @@
       "low": "121.1500",
       "price": "122.1500",
       "volume": "118323826",
-      "latest": "2021-03-31",
-      "previous": "119.9000",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "119.9000",
       "change": "2.2500",
-      "percent": "1.8766%"
+      "changePercent": "1.8766%"
     },
     {
       "symbol": "MSFT",
@@ -31,10 +31,10 @@
       "low": "232.3900",
       "price": "235.7700",
       "volume": "43623471",
-      "latest": "2021-03-31",
-      "previous": "231.8500",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "231.8500",
       "change": "3.9200",
-      "percent": "1.6907%"
+      "changePercent": "1.6907%"
     },
     {
       "symbol": "GOOGL",
@@ -43,10 +43,10 @@
       "low": "2047.0000",
       "price": "2062.5200",
       "volume": "2128482",
-      "latest": "2021-03-31",
-      "previous": "2046.4700",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "2046.4700",
       "change": "16.0500",
-      "percent": "0.7843%"
+      "changePercent": "0.7843%"
     },
     {
       "symbol": "AMZN",
@@ -55,10 +55,10 @@
       "low": "3062.5000",
       "price": "3094.0800",
       "volume": "3093896",
-      "latest": "2021-03-31",
-      "previous": "3055.2900",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "3055.2900",
       "change": "38.7900",
-      "percent": "1.2696%"
+      "changePercent": "1.2696%"
     },
     {
       "symbol": "NVDA",
@@ -67,10 +67,10 @@
       "low": "519.3000",
       "price": "533.9300",
       "volume": "7869438",
-      "latest": "2021-03-31",
-      "previous": "514.8700",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "514.8700",
       "change": "19.0600",
-      "percent": "3.7019%"
+      "changePercent": "3.7019%"
     },
     {
       "symbol": "AMD",
@@ -79,10 +79,10 @@
       "low": "76.5200",
       "price": "78.5000",
       "volume": "43659455",
-      "latest": "2021-03-31",
-      "previous": "76.0000",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "76.0000",
       "change": "2.5000",
-      "percent": "3.2895%"
+      "changePercent": "3.2895%"
     },
     {
       "symbol": "IBM",
@@ -91,10 +91,10 @@
       "low": "132.7100",
       "price": "133.2600",
       "volume": "4945315",
-      "latest": "2021-03-31",
-      "previous": "134.7200",
+      "latestTradingDay": "2021-03-31",
+      "previousClose": "134.7200",
       "change": "-1.4600",
-      "percent": "-1.0837%"
+      "changePercent": "-1.0837%"
     }
   ],
   "history": [

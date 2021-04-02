@@ -22,28 +22,16 @@ namespace Stonks.Models
         [JsonProperty("volume")]
         public string Volume { get; set; }
 
-        [JsonProperty("latest")]
-        public string Latest { get; set; }
+        [JsonProperty("latestTradingDay")]
+        public string LatestTradingDay { get; set; }
 
-        [JsonProperty("previous")]
-        public string Previous { get; set; }
+        [JsonProperty("previousClose")]
+        public string PreviousClose { get; set; }
 
         [JsonProperty("change")]
         public string Change { get; set; }
 
-        [JsonProperty("percent")]
-        public string Percent { get; set; }
-
-        public StockModel()
-        {
-        }
-
-        // public StockModel(string symbol, string name, string price, string change)
-        // {
-        //     Symbol = symbol;
-        //     Name = name;
-        //     Price = price;
-        //     Change = change;
-        // }
+        [JsonProperty("changePercent")]
+        public string ChangePercent { get; set; }
     }
 }
