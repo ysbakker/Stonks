@@ -6,14 +6,14 @@
              x:Class="Stonks.Views.MainPage"
              Title="Stonks"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             xmlns:stonks="clr-namespace:Stonks;assembly=Stonks"
+             xmlns:assets="clr-namespace:Stonks.Assets;assembly=Stonks"
              ios:Page.UseSafeArea="true">
     <ContentPage.BindingContext>
         <viewModels:MarketViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Resources>
         <ResourceDictionary>
-            <stonks:PercentColorConverter x:Key="PercentColorConverter" />
+            <assets:PercentColorConverter x:Key="PercentColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 

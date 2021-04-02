@@ -2,7 +2,7 @@
 using System.Globalization;
 using Xamarin.Forms;
 
-namespace Stonks
+namespace Stonks.Assets
 {
     public class PercentColorConverter : IValueConverter
     {
