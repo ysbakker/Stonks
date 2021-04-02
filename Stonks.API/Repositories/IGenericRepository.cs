@@ -9,7 +9,7 @@ namespace Stonks.API.Repositories
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        public IEnumerable<TEntity> GetAll();
+        public Task<IEnumerable<TEntity>> GetAll();
 
         public Task<TEntity> GetById(object id);
 

@@ -29,8 +29,15 @@ namespace Stonks.API.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAll()
         {
+            var supportedStocks = _configuration.GetSection("SupportedStocks").Get<string[]>();
+            foreach (var symbol in supportedStocks)
+            {
+                // TODO: concurrency?
+                _ = await GetById(symbol);
+            }
+            
             return _dbSet.ToList();
         }
 
@@ -39,13 +46,15 @@ namespace Stonks.API.Repositories
             var entity = await _dbSet.FindAsync(id);
             if (entity == null)
             {
+                // get the entity from AlphaVantage
                 entity = await GetFromExternal(id);
+
+                // if it doesn't exist in AlphaVantage return null
+                if (entity == null || !_context.Entry<TEntity>(entity).IsKeySet) return entity;
                 
-                if (_context.Entry<TEntity>(entity).IsKeySet)
-                {
-                    _context.Add(entity);
-                    Save();
-                }
+                // add to context and save to DB
+                _context.Add(entity);
+                Save();
             }
             
             return entity;
@@ -54,22 +63,22 @@ namespace Stonks.API.Repositories
         protected virtual async Task<TEntity> GetFromExternal(object id)
         {
             HttpClient httpClient = new HttpClient();
-            Console.WriteLine("GOING TO DO AN API CALL BITCHES");
             
             string apiKey = _configuration.GetValue<string>("API_KEY");
+            
+            // get correct URL from appsettings.Docker.json
             string classname = typeof(TEntity).Name;
             string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:" + classname), id, apiKey);
             
+            // TODO: error handling if request fails
             using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
-
-            // ReSharper disable once PossibleNullReferenceException
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            // ReSharper disable once IsExpressionAlwaysTrue
-            if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "application/json")
+            
+            if (httpResponse.Content.Headers.ContentType?.MediaType == "application/json")
             {
                 var contentStream = await httpResponse.Content.ReadAsStreamAsync();
 
+                // Deserialize the JSON to a specific TEntity
                 try
                 {
                     var newEntity = await System.Text.Json.JsonSerializer.DeserializeAsync<TEntity>(
@@ -82,23 +91,19 @@ namespace Stonks.API.Repositories
                                 JsonNumberHandling.AllowReadingFromString |
                                 JsonNumberHandling.WriteAsString,
                             WriteIndented = true,
+                            // No need to specify a converter here. Classes that need custom converters are annotated.
                         }
                     );
                     
                     return newEntity;
                 }
-                catch (JsonException jsonException) // Invalid JSON
+                catch (JsonException jsonException)
                 {
-                    Console.WriteLine("Invalid JSON.");
-                    Console.WriteLine(jsonException.Message);
                     return null;
                 }                
             }
-            else
-            {
-                Console.WriteLine("HTTP Response was invalid and cannot be deserialised.");
-                return null;
-            }
+
+            return null;
         }
 
         public void Insert(TEntity entity)

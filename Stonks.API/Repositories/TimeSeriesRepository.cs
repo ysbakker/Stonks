@@ -24,7 +24,7 @@ namespace Stonks.API.Repositories
         
         public async Task<IEnumerable<TimeSeries>> GetAllById(string symbol)
         {
-            var timeSeries = base.GetAll();
+            var timeSeries = await base.GetAll();
             
             if (timeSeries.ToList().Count == 0)
             {

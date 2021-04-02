@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
@@ -32,11 +33,14 @@ namespace Stonks.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Quote> Get()
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Quote>))]
+        public async Task<ActionResult> Get()
         {
-            Stock stock = new Stock();
-
-            return new[] { new Quote(), new Quote()};
+            var quotes = await _quotesRepository.GetAll();
+            // TODO: error handling?
+            
+            return Ok(quotes);
         }
         
         [HttpGet("{symbol}")]

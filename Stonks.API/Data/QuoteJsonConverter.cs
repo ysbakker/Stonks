@@ -9,6 +9,7 @@ namespace Stonks.API.Data
 {
     public class QuoteJsonConverter : JsonConverter<Quote>
     {
+        // map API keys to entity keys
         private readonly Dictionary<string, string> _propertyMappings = new Dictionary<string, string>
         {
             {"01. symbol", "Symbol"},
@@ -29,10 +30,12 @@ namespace Stonks.API.Data
                 throw new JsonException("Expected StartObject token");
 
             var quote = new Quote();
+            
+            // register current depth to fix https://stackoverflow.com/a/62155881
             var startDepth = reader.CurrentDepth;
-
             while (reader.Read())
             {
+                // return if we see a a closing bracket and we're back at the start of the object
                 if (reader.TokenType == JsonTokenType.EndObject && reader.CurrentDepth == startDepth)
                 {
                     return quote;
@@ -48,11 +51,14 @@ namespace Stonks.API.Data
                     reader.Read();
                     continue;
                 }
+
+                Console.WriteLine(propName);
                 
                 switch (propName)
                 {
                     case nameof(Quote.Symbol):
                         quote.Symbol = reader.GetString();
+                        Console.WriteLine(quote.Symbol);
                         break;
                     case nameof(Quote.Open):
                         quote.Open = decimal.Parse(reader.GetString());
