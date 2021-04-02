@@ -6,52 +6,77 @@
              x:Class="Stonks.Views.MainPage"
              Title="Stonks"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:stonks="clr-namespace:Stonks;assembly=Stonks"
              ios:Page.UseSafeArea="true">
     <ContentPage.BindingContext>
         <viewModels:MarketViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <stonks:PercentColorConverter x:Key="PercentColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <StackLayout Padding="10, 0">
         <SearchBar Text="{Binding SearchText}"
                    SearchCommand="{Binding SearchCommand}"
-                   Placeholder="Search by name or symbol" />
+                   Placeholder="Search by symbol" />
 
         <RefreshView IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
             <CollectionView ItemsSource="{Binding Stocks}"
-                            SelectionMode="None">
+                            SelectionMode="None" Margin="0,0,0,5">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="0, 10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0"
-                                Text="{Binding Symbol}"
-                                FontAttributes="Bold" />
-                            <Label Grid.Column="1"
-                                HorizontalOptions="End"
-                                Text="{Binding Price}"
-                                FontAttributes="Bold" />
-                            <!-- <Label Grid.Row="1" -->
-                            <!--     Grid.Column="0" -->
-                            <!--     Text="{Binding Name}" -->
-                            <!--     FontAttributes="Italic" /> -->
-                            <Label Grid.Row="1"
-                                Grid.Column="1"
-                                HorizontalOptions="End"
-                                Text="{Binding Percent}" />
-                            <Grid.GestureRecognizers>
+                        <Frame BackgroundColor="#fafafa"
+                               CornerRadius="0"
+                               Margin="0"
+                               Padding="10"
+                               HasShadow="False"
+                               BorderColor="#e6e6e6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0"
+                                       Text="{Binding Symbol}"
+                                       FontAttributes="Bold"
+                                       Grid.RowSpan="2"
+                                       FontSize="Medium" />
+                                <Label Grid.Row="0"
+                                       Grid.Column="1"
+                                       HorizontalOptions="End"
+                                       Text="{Binding Price}"
+                                       FontAttributes="Bold" />
+                                <!-- <Label Grid.Row="1" -->
+                                <!--     Grid.Column="0" -->
+                                <!--     Text="{Binding Name}" -->
+                                <!--     FontAttributes="Italic" /> -->
+                                <Frame Grid.Row="1"
+                                       Grid.Column="1"
+                                       HorizontalOptions="End"
+                                       CornerRadius="5"
+                                       Padding="0"
+                                       WidthRequest="75"
+                                       BackgroundColor="{Binding Percent, Converter={StaticResource PercentColorConverter}}" >
+                                    <Label Text="{Binding Percent}"
+                                           TextColor="White"
+                                           Margin="5"
+                                           HorizontalOptions="End" />
+                                </Frame>
+                            </Grid>
+                            <Frame.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                    Command="{Binding StockSelectedCommand, Source={RelativeSource AncestorType={x:Type viewModels:MarketViewModel}}}"
-                                                    CommandParameter="{Binding .}" />
-                            </Grid.GestureRecognizers>
-                        </Grid>
+                                                      Command="{Binding StockSelectedCommand, 
+                                                        Source={RelativeSource AncestorType={x:Type viewModels:MarketViewModel}}}"
+                                                      CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
