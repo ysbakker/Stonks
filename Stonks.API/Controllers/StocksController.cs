@@ -31,11 +31,14 @@ namespace Stonks.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Stock> Get()
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Stock>))]
+        public async Task<ActionResult> Get()
         {
-            Stock stock = new Stock();
-
-            return new[] { new Stock(), new Stock() };
+            var stocks = await _stocksRepository.GetAll();
+            // TODO: error handling?
+            
+            return Ok(stocks);
         }
         
         [HttpGet("{symbol}")]
