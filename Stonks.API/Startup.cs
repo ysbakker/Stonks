@@ -25,7 +25,6 @@ namespace Stonks.API
             
             services.AddDbContext<StonksContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<TimeSeriesRepository>();
             services.AddControllers();
         }
 
