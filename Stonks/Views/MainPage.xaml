@@ -62,7 +62,8 @@
                                        HorizontalOptions="End"
                                        CornerRadius="5"
                                        Padding="0"
-                                       WidthRequest="75"
+                                       HasShadow="False"
+                                       WidthRequest="85"
                                        BackgroundColor="{Binding Percent, Converter={StaticResource PercentColorConverter}}" >
                                     <Label Text="{Binding Percent}"
                                            TextColor="White"
