@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -35,14 +36,8 @@ namespace Stonks.API.Data
             var startDepth = reader.CurrentDepth;
             while (reader.Read())
             {
-                // return if we see a a closing bracket and we're back at the start of the object
-                if (reader.TokenType == JsonTokenType.EndObject && reader.CurrentDepth == startDepth)
-                {
-                    return quote;
-                }
-
                 string propName;
-                if (_propertyMappings.TryGetValue(reader.GetString(), out propName))
+                if (reader.TokenType == JsonTokenType.PropertyName &&  _propertyMappings.TryGetValue(reader.GetString(), out propName))
                 {
                     reader.Read();
                 }
@@ -84,11 +79,21 @@ namespace Stonks.API.Data
                     case nameof(Quote.ChangePercent):
                         quote.ChangePercent = reader.GetString();
                         break;
+                    case nameof(Quote.PreviousClose):
+                        quote.PreviousClose = decimal.Parse(reader.GetString());
+                        break;
                     default:
-                        reader.Read();
                         continue;
                 }
             }
+            // return if we see a a closing bracket and we're back at the start of the object
+            if (reader.TokenType == JsonTokenType.EndObject && reader.CurrentDepth == startDepth)
+            {
+                if (quote.Symbol == null)
+                    throw new ArgumentException();
+                return quote;
+            }
+
             throw new JsonException("Expected EndObject token");
         }
 
