@@ -12,8 +12,8 @@ namespace StonksML.ConsoleApp
 {
     public static class ModelBuilder
     {
-        private static string TRAIN_DATA_FILEPATH = @"C:\Users\Ivo\Downloads\daily_IBM.csv";
-        private static string MODEL_FILEPATH = @"C:\Users\Ivo\AppData\Local\Temp\MLVSTools\StonksML\StonksML.Model\MLModel.zip";
+        private static string TRAIN_DATA_FILEPATH = @"./data/training.csv";
+        private static string MODEL_FILEPATH = @"./MLModel.zip";
         // Create MLContext to be shared across the model creation workflow objects 
         // Set a random seed for repeatable/deterministic results across multiple trainings.
         private static MLContext mlContext = new MLContext(seed: 1);
@@ -44,7 +44,7 @@ namespace StonksML.ConsoleApp
         public static IEstimator<ITransformer> BuildTrainingPipeline(MLContext mlContext)
         {
             // Data process configuration with pipeline data transformations 
-            var dataProcessPipeline = mlContext.Transforms.Concatenate("Features", new[] { "open", "high", "low", "volume" })
+            var dataProcessPipeline = mlContext.Transforms.Concatenate("Features", new[] { "open", "high", "low" })
                                       .Append(mlContext.Transforms.NormalizeMinMax("Features", "Features"));
             // Set the training algorithm 
             var trainer = mlContext.Regression.Trainers.Ols(labelColumnName: "close", featureColumnName: "Features");

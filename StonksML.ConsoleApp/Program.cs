@@ -12,10 +12,9 @@ namespace StonksML.ConsoleApp
             // Create single instance of sample data from first line of dataset for model input
             ModelInput sampleData = new ModelInput()
             {
-                Open = 574.72F,
-                High = 618.60F,
-                Low = 565.35F,
-                Volume = 120F,
+                Open = 126.5F,
+                High = 127.13F,
+                Low = 125.65F,
             };
 
             // Make a single prediction on the sample data and print results
@@ -25,7 +24,6 @@ namespace StonksML.ConsoleApp
             Console.WriteLine($"Open: {sampleData.Open}");
             Console.WriteLine($"High: {sampleData.High}");
             Console.WriteLine($"Low: {sampleData.Low}");
-            Console.WriteLine($"Volume: {sampleData.Volume}");
             Console.WriteLine($"\n\nPredicted Close: {predictionResult.Score}\n\n");
             Console.WriteLine("=============== End of process, hit any key to finish ===============");
             Console.ReadKey();
