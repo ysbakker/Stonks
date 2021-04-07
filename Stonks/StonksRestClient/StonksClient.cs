@@ -15,18 +15,18 @@ namespace Stonks.StonksRestClient
 
         public StonksClient()
         {
-            _stonksApi = Device.RuntimePlatform == Device.Android ? "http://10.0.2.2:3000/stocks" : "http://localhost:3000/stocks";
+            _stonksApi = Device.RuntimePlatform == Device.Android ? "http://10.0.2.2:4000" : "http://localhost:4000";
         }
 
         public async Task<List<StockModel>> GetAllStocks()
         {
-            var json = await _httpClient.GetStringAsync(_stonksApi);
+            var json = await _httpClient.GetStringAsync($"{_stonksApi}/quotes/");
             return JsonConvert.DeserializeObject<List<StockModel>>(json);
         }
 
         public async Task<List<StocksTimeSeriesModel>> GetStockTimeSeries(string symbol)
         {
-            var json = await _httpClient.GetStringAsync($"{_stonksApi}/{symbol}/history");
+            var json = await _httpClient.GetStringAsync($"{_stonksApi}/timeseries/{symbol}/");
             return JsonConvert.DeserializeObject<List<StocksTimeSeriesModel>>(json);
         }
     }
