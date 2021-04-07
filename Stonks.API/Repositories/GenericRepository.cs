@@ -19,7 +19,7 @@ namespace Stonks.API.Repositories
     // https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        private readonly StonksContext _context;
+        protected readonly StonksContext _context;
         protected readonly DbSet<TEntity> _dbSet;
         protected  readonly IConfiguration _configuration;
 
@@ -42,11 +42,25 @@ namespace Stonks.API.Repositories
             return _dbSet.ToList();
         }
 
-        public virtual async Task<TEntity> GetById(object id)
+        public async Task<IEnumerable<TEntity>> Get(
+            Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public virtual async Task<TEntity> GetById(object id, object otherKeys = null)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null)
             {
+                Console.WriteLine("Doing an api call bitches");
                 // get the entity from AlphaVantage
                 entity = await GetFromExternal(id);
 

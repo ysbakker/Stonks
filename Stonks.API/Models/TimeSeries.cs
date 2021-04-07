@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Stonks.API.Data;
 
 namespace Stonks.API.Models
 {
@@ -22,15 +24,9 @@ namespace Stonks.API.Models
         public decimal Close { get; set; }
         
         [Required]
-        public int Volume { get; set; }
+        public long Volume { get; set; }
         
-        [Required]
-        public string Interval { get; set; }
-
         [ForeignKey("Symbol")]
         public string Symbol { get; set; }
-        
-        [Required]
-        public Stock Stock { get; set; }
     }
 }

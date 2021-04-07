@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -21,27 +25,28 @@ namespace Stonks.API.Controllers
         private readonly ILogger<TimeSeriesController> _logger;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient = new HttpClient();
-        private readonly IGenericRepository<TimeSeries> _timeseriesRepository;
+        private readonly TimeSeriesRepository _timeseriesRepository;
         
-        public TimeSeriesController(ILogger<TimeSeriesController> logger, IConfiguration configuration, IGenericRepository<TimeSeries> timeseriesRepository)
+        public TimeSeriesController(ILogger<TimeSeriesController> logger, IConfiguration configuration, TimeSeriesRepository timeseriesRepository)
         {
             _logger = logger;
             _configuration = configuration;
             _timeseriesRepository = timeseriesRepository;
         }
 
-        [HttpGet]
-        public IEnumerable<TimeSeries> Get()
-        {
-            TimeSeries stock = new TimeSeries();
-
-            return new[] {new TimeSeries(), new TimeSeries()};
-        }
-        
         [HttpGet("{symbol}")]
-        public async Task<ActionResult<TimeSeries>> GetBySymbol(string symbol)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TimeSeries>))]
+        public async Task<ActionResult> GetBySymbol(string symbol)
         {
-            return await _timeseriesRepository.GetById(symbol);
+            Expression<Func<TimeSeries, bool>> filterBySymbol = (entity) => entity.Symbol == symbol; 
+
+            var timeseries =  await _timeseriesRepository.Get(symbol, filterBySymbol);
+
+           if (timeseries == null || !timeseries.Any())
+                return NotFound();
+
+            return Ok(timeseries);
         }
     }
 }

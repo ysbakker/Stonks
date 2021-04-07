@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Stonks.API.Data;
@@ -9,9 +10,10 @@ using Stonks.API.Data;
 namespace Stonks.API.Migrations
 {
     [DbContext(typeof(StonksContext))]
-    partial class StonksContextModelSnapshot : ModelSnapshot
+    [Migration("20210402115731_UpdateTimeSeriesProperties")]
+    partial class UpdateTimeSeriesProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,8 +104,8 @@ namespace Stonks.API.Migrations
                     b.Property<decimal>("Open")
                         .HasColumnType("numeric");
 
-                    b.Property<long>("Volume")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Volume")
+                        .HasColumnType("integer");
 
                     b.HasKey("TimeStamp", "Symbol");
 
