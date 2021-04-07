@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -38,7 +39,8 @@ namespace Stonks.API.Controllers
         public async Task<ActionResult> Get()
         {
             var quotes = await _quotesRepository.GetAll();
-            // TODO: error handling?
+            if (quotes == null || !quotes.Any())
+                return NotFound();
             
             return Ok(quotes);
         }

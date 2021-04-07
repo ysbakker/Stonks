@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -35,7 +36,8 @@ namespace Stonks.API.Controllers
         public async Task<ActionResult> Get()
         {
             var stocks = await _stocksRepository.GetAll();
-            // TODO: error handling?
+            if (stocks == null || !stocks.Any())
+                return NotFound();
             
             return Ok(stocks);
         }

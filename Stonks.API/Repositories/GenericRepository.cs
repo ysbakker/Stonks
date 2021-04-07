@@ -55,7 +55,7 @@ namespace Stonks.API.Repositories
             return await query.ToListAsync();
         }
 
-        public virtual async Task<TEntity> GetById(object id, object otherKeys = null)
+        public virtual async Task<TEntity> GetById(object id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null)
@@ -76,7 +76,8 @@ namespace Stonks.API.Repositories
 
         protected virtual async Task<TEntity> GetFromExternal(object id)
         {
-            HttpClient httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
+            HttpResponseMessage httpResponse;
             
             string apiKey = _configuration.GetValue<string>("API_KEY");
             
@@ -84,9 +85,15 @@ namespace Stonks.API.Repositories
             string classname = typeof(TEntity).Name;
             string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:" + classname), id, apiKey);
             
-            // TODO: error handling if request fails
-            using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-            httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
+            try
+            {
+                httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+            }
+            catch(Exception)
+            {
+                // return null everywhere, exception mappers should be used
+                return null;
+            }
             
             if (httpResponse.Content.Headers.ContentType?.MediaType == "application/json")
             {
