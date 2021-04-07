@@ -41,10 +41,9 @@ namespace Stonks.API.Data
 
                 if (reader.TokenType == JsonTokenType.EndObject && reader.CurrentDepth != startDepth && series.TimeStamp != DateTime.MinValue)
                 {
-                    var d = series.TimeStamp;
                     fullseries.Add(new TimeSeries()
                     {
-                        TimeStamp = d,
+                        TimeStamp = series.TimeStamp,
                         Open = series.Open,
                         High = series.High,
                         Low = series.Low,
