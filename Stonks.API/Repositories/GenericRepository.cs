@@ -60,7 +60,6 @@ namespace Stonks.API.Repositories
             var entity = await _dbSet.FindAsync(id);
             if (entity == null)
             {
-                Console.WriteLine("Doing an api call bitches");
                 // get the entity from AlphaVantage
                 entity = await GetFromExternal(id);
 

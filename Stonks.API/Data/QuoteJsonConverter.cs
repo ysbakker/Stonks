@@ -46,14 +46,11 @@ namespace Stonks.API.Data
                     reader.Read();
                     continue;
                 }
-
-                Console.WriteLine(propName);
                 
                 switch (propName)
                 {
                     case nameof(Quote.Symbol):
                         quote.Symbol = reader.GetString();
-                        Console.WriteLine(quote.Symbol);
                         break;
                     case nameof(Quote.Open):
                         quote.Open = decimal.Parse(reader.GetString());

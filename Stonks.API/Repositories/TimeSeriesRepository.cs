@@ -39,7 +39,6 @@ namespace Stonks.API.Repositories
             
             if (shouldUpdate || !hasPreviousEntries)
             {
-                Console.WriteLine("External call!");
                 var entities = await GetFromExternals(symbol);
                 if (entities == null) return null;
 
@@ -47,7 +46,6 @@ namespace Stonks.API.Repositories
                 // so we need to manually upsert to avoid duplicates
                 foreach (var entity in entities)
                 {
-                    Console.WriteLine(entity.TimeStamp);
                     if (!_dbSet.Any(e => e.TimeStamp == entity.TimeStamp && e.Symbol == entity.Symbol))
                     {
                         await _dbSet.AddAsync(entity);
@@ -67,10 +65,8 @@ namespace Stonks.API.Repositories
             
             // get correct URL from appsettings.Docker.json
             string classname = typeof(TimeSeries).Name;
-            Console.WriteLine(classname);
-            
+
             string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:" + classname), id, apiKey);
-            Console.WriteLine(uri);
 
             // TODO: error handling if request fails
             using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
