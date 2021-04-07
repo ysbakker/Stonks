@@ -59,7 +59,8 @@ namespace Stonks.API.Repositories
         
         private async Task<IEnumerable<TimeSeries>> GetFromExternals(object id)
         {
-            HttpClient httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
+            HttpResponseMessage httpResponse;
             
             string apiKey = _configuration.GetValue<string>("API_KEY");
             
@@ -68,9 +69,15 @@ namespace Stonks.API.Repositories
 
             string uri = String.Format(_configuration.GetValue<string>("ExternalUrls:" + classname), id, apiKey);
 
-            // TODO: error handling if request fails
-            using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-            httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
+            try
+            {
+                httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+            }
+            catch(Exception)
+            {
+                // return null everywhere, exception mappers should be used
+                return null;
+            }
             
             if (httpResponse.Content.Headers.ContentType?.MediaType == "application/json")
             {

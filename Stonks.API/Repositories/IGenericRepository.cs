@@ -12,7 +12,7 @@ namespace Stonks.API.Repositories
         public Task<IEnumerable<TEntity>> GetAll();
 
         // TODO: make args an array so we can use composite keys
-        public Task<TEntity> GetById(object id, object otherKeys = null);
+        public Task<TEntity> GetById(object id);
 
         public Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null);
         
