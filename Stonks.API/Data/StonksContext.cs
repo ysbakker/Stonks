@@ -8,6 +8,7 @@ namespace Stonks.API.Data
     {
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<TimeSeries> TimeSeries {get; set; }
+        public DbSet<Quote> Quotes {get; set; }
         private readonly IConfiguration _configuration;
 
         public StonksContext(DbContextOptions<StonksContext> options, IConfiguration configuration) : base(options)
