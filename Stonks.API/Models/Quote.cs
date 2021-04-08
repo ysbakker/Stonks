@@ -6,27 +6,19 @@ using Stonks.API.Data;
 
 namespace Stonks.API.Models
 {
-    public class TimeSeries
+    [JsonConverter(typeof(QuoteJsonConverter))]
+    public class Quote
     {
-        [Required]
-        public DateTime TimeStamp { get; set; }
-        
-        [Required]
-        public decimal Open { get; set; }
-        
-        [Required]
-        public decimal High { get; set; }
-        
-        [Required]
-        public decimal Low { get; set; }
-        
-        [Required]
-        public decimal Close { get; set; }
-        
-        [Required]
-        public long Volume { get; set; }
-        
-        [ForeignKey("Symbol")]
+        [Key]
         public string Symbol { get; set; }
+        public decimal Open { get; set; }
+        public decimal High { get; set; }
+        public decimal Low { get; set; }
+        public decimal Price { get; set; }
+        public long Volume { get; set; }
+        public DateTime LatestTradingDay { get; set; }
+        public decimal PreviousClose { get; set; }
+        public decimal Change { get; set; }
+        public string ChangePercent { get; set; }
     }
 }

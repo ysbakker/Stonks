@@ -4,25 +4,24 @@ namespace Stonks.Models
 {
     public class StockModel
     {
-        [JsonProperty("symbol")]
         public string Symbol { get; set; }
-        [JsonProperty("name")]
-        public string Name { get; set; }
-        [JsonProperty("price")]
+
+        public string Open { get; set; }
+
+        public string High { get; set; }
+
+        public string Low { get; set; }
+        
         public string Price { get; set; }
-        [JsonProperty("change")]
+
+        public string Volume { get; set; }
+
+        public string LatestTradingDay { get; set; }
+
+        public string PreviousClose { get; set; }
+
         public string Change { get; set; }
-
-        public StockModel()
-        {
-        }
-
-        public StockModel(string symbol, string name, string price, string change)
-        {
-            Symbol = symbol;
-            Name = name;
-            Price = price;
-            Change = change;
-        }
+        
+        public string ChangePercent { get; set; }
     }
 }

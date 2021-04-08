@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Stonks.API.Data;
 using Stonks.API.Models;
+using Stonks.API.Repositories;
 
 namespace Stonks.API.Controllers
 {
@@ -16,72 +19,38 @@ namespace Stonks.API.Controllers
     [Route("stocks")]
     public class StocksController : ControllerBase
     {
-        private readonly StonksContext _context;
         private readonly ILogger<StocksController> _logger;
-        private IConfiguration _configuration;
-        private readonly HttpClient httpClient = new HttpClient();
+        private readonly IConfiguration _configuration;
+        private readonly IGenericRepository<Stock> _stocksRepository;
 
-        public StocksController(StonksContext context, ILogger<StocksController> logger, IConfiguration configuration)
+        public StocksController(ILogger<StocksController> logger, IConfiguration configuration, IGenericRepository<Stock> stocksRepository)
         {
-            _context = context;
             _logger = logger;
             _configuration = configuration;
+            _stocksRepository = stocksRepository;
         }
 
         [HttpGet]
-        public IEnumerable<Stock> Get()
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Stock>))]
+        public async Task<ActionResult> Get()
         {
-            Stock stock = new Stock();
-
-            return new[] {new Stock(), new Stock()};
+            var stocks = await _stocksRepository.GetAll();
+            if (stocks == null || !stocks.Any())
+                return NotFound();
+            
+            return Ok(stocks);
         }
         
         [HttpGet("{symbol}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Stock>> GetStockItem(string symbol)
         {
-            var stock = await _context.Stocks.FindAsync(symbol);
+            var stock = await _stocksRepository.GetById(symbol);
 
             if (stock == null)
-            {
-                string apiKey = _configuration.GetValue<string>("API_KEY");
-                
-                string uri = $"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey={apiKey}";
-
-                using var httpResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-
-                httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
-
-                // ReSharper disable once PossibleNullReferenceException
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                // ReSharper disable once IsExpressionAlwaysTrue
-                if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "application/json")
-                {
-                    var contentStream = await httpResponse.Content.ReadAsStreamAsync();
-
-                    try
-                    {
-                        return await System.Text.Json.JsonSerializer.DeserializeAsync<Stock>(
-                            contentStream, 
-                            new System.Text.Json.JsonSerializerOptions
-                            {
-                                IgnoreNullValues = true, 
-                                PropertyNameCaseInsensitive = true
-                            }
-                        );
-                    }
-                    catch (JsonException) // Invalid JSON
-                    {
-                        Console.WriteLine("Invalid JSON.");
-                        return NotFound();
-                    }                
-                }
-                else
-                {
-                    Console.WriteLine("HTTP Response was invalid and cannot be deserialised.");
-                }
-
-                return NotFound();
-            }
+                return NotFound(symbol);
 
             return stock;
         }
