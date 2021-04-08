@@ -18,6 +18,7 @@ namespace Stonks.ViewModels
         public SKColor GridColor { get; }
         public StockModel Stock { get; }
         public Chart<LineChart> Chart { get; set; }
+        public String Prediction { get; set; }
 
         public StockDetailsViewModel()
         {
@@ -34,6 +35,8 @@ namespace Stonks.ViewModels
 
         private async Task GetChartData()
         {
+            StockPredictionModel prediction = await _stockServices.GetStockPrediction(Stock);
+            Prediction = $"Predicted close value: {prediction.PredictedValue}";
             List<StocksTimeSeriesModel> history = await _stockServices.GetStockTimeSeries(Stock);
             var labels = history.Select(x =>
             {
@@ -73,6 +76,7 @@ namespace Stonks.ViewModels
             };
 
             OnPropertyChanged(nameof(Chart));
+            OnPropertyChanged(nameof(Prediction));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

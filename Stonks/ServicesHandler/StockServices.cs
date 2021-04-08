@@ -18,5 +18,10 @@ namespace Stonks.ServicesHandler
         {
             return await _stocksRest.GetStockTimeSeries(stock.Symbol);
         }
+
+        public async Task<StockPredictionModel> GetStockPrediction(StockModel stock)
+        {
+            return await _stocksRest.GetStockPrediction(stock.Symbol);
+        }
     }
 }

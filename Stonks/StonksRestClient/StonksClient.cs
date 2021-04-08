@@ -29,5 +29,11 @@ namespace Stonks.StonksRestClient
             var json = await _httpClient.GetStringAsync($"{_stonksApi}/timeseries/{symbol}/");
             return JsonConvert.DeserializeObject<List<StocksTimeSeriesModel>>(json);
         }
+
+        public async Task<StockPredictionModel> GetStockPrediction(string symbol)
+        {
+            var json = await _httpClient.GetStringAsync($"{_stonksApi}/predictions/{symbol}/");
+            return JsonConvert.DeserializeObject<StockPredictionModel>(json);
+        }
     }
 }
