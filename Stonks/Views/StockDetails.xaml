@@ -15,16 +15,15 @@
         <viewModels:StockDetailsViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        
-            <Grid Padding="10">
+        <Grid Padding="10">
             <Label Text="{Binding Prediction}" />
-                <chartViews:ChartCanvas
-                    x:TypeArguments="charts:LineChart"
-                    GridLines="10"
-                    LabelTextSize="30"
-                    CanShowLegend="True"
-                    Chart="{Binding Chart}"
-                    GridColor="{Binding GridColor}" />
-            </Grid>
+            <chartViews:ChartCanvas
+                x:TypeArguments="charts:LineChart"
+                GridLines="10"
+                LabelTextSize="30"
+                CanShowLegend="True"
+                Chart="{Binding Chart}"
+                GridColor="{Binding GridColor}" />
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
